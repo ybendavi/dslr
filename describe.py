@@ -104,17 +104,17 @@ def describe(data: DataFrame):
 
 
 def main():
-    assert len(sys.argv) == 2, "Please provide a data file"
-    data = load(sys.argv[1])
-    data = load("datasets/dataset_train.csv")
-    data = data.drop('Index', axis=1)
+    try:
+        assert len(sys.argv) == 2, "Please provide a data file"
+        data = load(sys.argv[1])
+        data = data.drop('Index', axis=1)
 
-    print(describe(data))
-    print(data.describe())
-
-    #display_two_datas(describe(data), data.describe())
+        print(describe(data))
+        # print(data.describe())
+        # display_two_datas(describe(data), data.describe())
+    except Exception as e:
+        print("Error: ", str(e))
 
 
 if __name__ == "__main__":
     main()
-    
