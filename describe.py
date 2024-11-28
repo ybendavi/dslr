@@ -1,5 +1,8 @@
-from pandas import DataFrame, options, isnull
+from display import display_two_datas
+from load_csv import load
+from pandas import DataFrame, options
 import numpy as np
+import sys
 
 
 def modify_col(column):
@@ -98,3 +101,20 @@ def describe(data: DataFrame):
         calculate_for_col(sorted_column, desc_df, col)
 
     return (desc_df)
+
+
+def main():
+    assert len(sys.argv) == 2, "Please provide a data file"
+    data = load(sys.argv[1])
+    data = load("datasets/dataset_train.csv")
+    data = data.drop('Index', axis=1)
+
+    print(describe(data))
+    print(data.describe())
+
+    #display_two_datas(describe(data), data.describe())
+
+
+if __name__ == "__main__":
+    main()
+    
