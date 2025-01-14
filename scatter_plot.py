@@ -24,12 +24,13 @@ def scatter_plot(data):
     for col in columns_name:
         x = data.columns.get_loc(col)
         y = x + 1
-#        to_afffiche = standardise(data[col])
+        std_vals_x = standardise(data[col])
         while y < nb_col:
-           # to_afffiche2 = standardise(data.iloc[:, y])
-            axes[j, i].scatter(data.iloc[:, x], data.iloc[:, y], marker='.', color='orange')
+            std_vals_y = standardise(data.iloc[:, y])
+            # non-normalised line
+            # axes[j, i].scatter(data.iloc[:, x], data.iloc[:, y], marker='.', color='orange')
             # normalised line
-            #axes[j, i].scatter(to_afffiche, to_afffiche2, marker='.')
+            axes[j, i].scatter(std_vals_x, std_vals_y, marker='.')
             axes[j, i].set_title("{}\n+ {}".format(col, data.iloc[:, y].name), fontsize=8)
             y += 1
             i += 1
@@ -39,10 +40,7 @@ def scatter_plot(data):
     while i < 10:
         axes[j,i].axis('off')
         i += 1
-
-
-   # handles, labels = axes[0, 0].get_legend_handles_labels()
-   # fig.legend(handles, labels, loc='lower center', ncol=1, fontsize=12)
+        
     # Cette option sert a ce que les graphes ne se chevauchent pas
     plt.tight_layout()
     plt.draw()
