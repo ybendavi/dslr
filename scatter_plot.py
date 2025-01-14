@@ -40,7 +40,7 @@ def scatter_plot(data):
     while i < 10:
         axes[j,i].axis('off')
         i += 1
-
+        
     # Cette option sert a ce que les graphes ne se chevauchent pas
     plt.tight_layout()
     plt.draw()
