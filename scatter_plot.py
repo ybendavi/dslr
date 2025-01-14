@@ -20,7 +20,6 @@ def scatter_plot(data):
     i = 0
     j = 0
     columns_name = data.select_dtypes(include=np.number).columns
-    print(columns_name)
     for col in columns_name:
         x = data.columns.get_loc(col)
         y = x + 1
