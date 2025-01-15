@@ -1,0 +1,82 @@
+https://mrmint.fr/logistic-regression-machine-learning-introduction-simple
+
+One versus all -> classification multiclasse
+Binary classification = boolean : label de type oui ou non.
+    Pour cela il faut trouver une ligne "Boundary Decision" qui separe
+    les deux groupes. Y = 0 ou 1
+multiclass classification = plusieurs labels possibles
+
+Algorithme de regression Logistique binaire =
+
+La fonction score  == θ0 + θ1x1 + θ2x2 + ... + θnxn
+    pour tout x dans le vecteur X 
+    xi = variable predictive (feature) 
+    θi = un poids 
+    θ0 = une constante nommee le biais
+Si cette fonction est > que 0, la classe faut 1
+si cette fonction est < que 0, la classe vaut 0
+
+Une fonction Sigmoid (fonction Logistique) = 1 / (1 + e^-x)
+    contenue entre 0 et 1
+    s'approche de 0 et 1 sans jamais les toucher
+    quand x = 0 ; Sigmoid(0) = 0.5
+    Sigmoid(x) > 0.5 quand x > 0 et Sigmoid (x) < 0.5 quand x < 0
+
+en appliqunt cette fonction a la fonction score, on obtient
+l'hypothese de la regression logistique = 
+    Sigmoid(GrandTheta X) = 1 / (1 + e ^ (GrandTheta X))
+    Grand theta etant le vecteur des valeurs θ 
+    X etant le vecteur des valeurs x
+
+le nombre renvoye par l'hypothese de la regression logisitique represente
+la probabilite que l'observation soit de la classe 1 (soit la classe positive)
+
+
+Algorithme One versus All =
+
+En cas de multiclasse, on considere une classe (Hufflepuff) comme la classe positive
+Le reste sera consideree comme la classe negative
+On entraine la regression sur cette configuration de donnee : H1(x)
+puis on switche sur une autre classe (Serpentar) et on entraine a nouveau la regression
+avec ce set de donnee
+ect.
+jusqu'a avoir nos trois predictions Hn(x).
+chaque prediction donne la probabilite que x appartienne a cette classe.
+x est donc dans la classe qui a le + de proba
+
+
+https://datatab.fr/tutorial/logistic-regression
+
+variable dependante = ce que tu recherches
+variables independantes = tes features
+
+la fonction logistique est une regresion lineaire contenue entre 0 et 1 :)
+pour calculer les poids, on utilise la methode du maximum de vraisemblance
+"La relation entre les variables dépendantes et indépendantes dans la régression
+logistiquen'est pas linéaire. Par conséquent, les coefficients de régression ne peuvent
+pas être interprétés de la même manière que dans la régression linéaire. C'est pourquoi
+les cotes sont interprétées dans la régression logistique. "
+
+une bonne variable independante permet de distinguer significativement les groupes
+de la variable dependante.
+les poids sont calcules en mettant en relation deux probabilites : que ce soit true ou false
+    -> poids = probab/(1- probab)
+    pour probal > 0
+
+
+    (https://datascientest.com/coefficient-de-determination
+
+    coefficient de determination =
+    indice de qualite de la prediction. Il se calcule ->
+        R^2 = 1 - erreurs comises / total echantillon
+        pour une regression lineaire)
+
+il n'y a pas de variance pour la regression logistique
+pseudo coefficients de determination ont etes concus pour evaluer la quali
+du modele entre 0 et 1
+ces modeles sont detailles dans la source ; McFadden a l air d etre le plus 
+accessible.
+ils utilisent tous le modele nul, ce aui veut dire les resultats avec 
+un modele non entraines
+
+
