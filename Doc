@@ -79,4 +79,40 @@ accessible.
 ils utilisent tous le modele nul, ce aui veut dire les resultats avec 
 un modele non entraines
 
+http://www.ressources-actuarielles.net/ext/isfa/fp-isfa.nsf/1bebb4baec15bba8c12580e90064b202/69dec6b0bcef0009c1257f990073b7cf/$FILE/pratique_regression_logistique.pdf
+
+
+
+
+Danger overfiting ->
+un modele apprends avec des donnes d'entrainement et devient tres bon pour ces donnees, 
+mais il peut manquer de precision pour les autres donnees hors du traning set.
+un modele trop complexe pqr rqpport a un jeu de donnee (trop de features par ex) peut 
+entrainer un overfitting 
+danger underfitting -> a trop vouloir contrecarrer l'overfitting, l inverse peut arriver =
+un modele moins precis 
+
+
+
+voc = Le théorème de Bayes :
+
+probabilité a priori = avant les données
+Probabilité conditionnelle = les données
+Probabilité a posteriori = après les données
+P(A∣B)=P(B)P(B∣A)P(A)
+
+où :
+
+    P(A|B) est la probabilité de l'événement A étant donné l'événement B (probabilité a posteriori).
+    P(B|A) est la probabilité d'observer B si A est vrai (probabilité vraisemblance).
+    P(A) est la probabilité a priori de A (avant d'observer B).
+    P(B) est la probabilité totale de B (évidemment indépendante de A).
+
+Application en statistique :
+
+En statistique bayésienne, ce théorème est utilisé pour réactualiser les croyances (ou probabilités) sur un modèle ou une hypothèse au fur et à mesure que de nouvelles données sont observées. L'idée clé est que les informations préalables (ce que l'on sait avant d'avoir vu les données) et les données observées sont combinées pour obtenir une probabilité mise à jour, appelée probabilité a posteriori.
+
+
+calcul des poids -> minimalisation de la fonction de cout
+
 

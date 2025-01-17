@@ -2,7 +2,9 @@ import matplotlib.pyplot as plt
 import sys
 import numpy as np
 from load_csv import load
+from age_to_int import convert_birth_to_days
 from math import sqrt
+from display import display_data
 
 
 def standardise(data):
@@ -15,8 +17,11 @@ def standardise(data):
 
 
 def scatter_plot(data):
-    nb_col = data.shape[1]
+    data = data.drop(columns=['Best Hand', 'Birthday'])
+    nb_feateurs = data.shape[1]
     fig, axes = plt.subplots(nrows=8, ncols=10, figsize=(20, 12))
+    # with best hand and birthday
+    # fig, axes = plt.subplots(nrows=9, ncols=12, figsize=(20, 12))
     i = 0
     j = 0
     columns_name = data.select_dtypes(include=np.number).columns
@@ -24,7 +29,7 @@ def scatter_plot(data):
         x = data.columns.get_loc(col)
         y = x + 1
         std_vals_x = standardise(data[col])
-        while y < nb_col:
+        while y < nb_feateurs:
             std_vals_y = standardise(data.iloc[:, y])
             # non-normalised line
             # axes[j, i].scatter(data.iloc[:, x], data.iloc[:, y], marker='.', color='orange')
@@ -34,9 +39,13 @@ def scatter_plot(data):
             y += 1
             i += 1
             if (i == 10):
+            # with best hand and birthday
+            # if (i == 12):
                 i = 0
                 j += 1
     while i < 10:
+    # with best hand and birthday
+    # while i < 12:
         axes[j,i].axis('off')
         i += 1
         
@@ -45,11 +54,17 @@ def scatter_plot(data):
     plt.draw()
     plt.show()
 
+def hand_to_int(data):
+    d = {'Right': 0.0, 'Left': 1.0}
+    b_h = data['Best Hand'].map(d)
+    return b_h
 
 def main():
-    assert len(sys.argv) == 2, "Please provide a data file"
+    data = load("./datasets/dataset_train.csv")
+    data['Birthday'] = convert_birth_to_days(data['Birthday'])
+    data['Best Hand'] = hand_to_int(data)
+    #display_data(data)
 
-    data = load(sys.argv[1])
     data = data.drop('Index', axis=1)
     scatter_plot(data)
 

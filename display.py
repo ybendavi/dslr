@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 
+from load_csv import load
+from pandas import DataFrame as df
+
 
 def set_data(data, parent):
     frame = ttk.Frame(parent)
@@ -73,3 +76,13 @@ def display_data(data):
 
     # Lancer la fenêtre
     root.mainloop()
+
+
+# def main():
+#     dataframe = load("datasets/dataset_train.csv")
+#     display_data(dataframe)
+
+# if __name__ == "__main__":
+#     main()
+
+
