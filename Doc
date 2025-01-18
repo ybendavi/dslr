@@ -113,6 +113,34 @@ Application en statistique :
 En statistique bayésienne, ce théorème est utilisé pour réactualiser les croyances (ou probabilités) sur un modèle ou une hypothèse au fur et à mesure que de nouvelles données sont observées. L'idée clé est que les informations préalables (ce que l'on sait avant d'avoir vu les données) et les données observées sont combinées pour obtenir une probabilité mise à jour, appelée probabilité a posteriori.
 
 
-calcul des poids -> minimalisation de la fonction de cout
+calcul des poids -> minimalisation de la fonction de cout avec une descente de gradient
+with maximum de vraisemblance
 
+
+Descente stochastique de gradient -> 
+prend un echantillon plus petit des donnees pour chaque mise a jour de theta1, ce qui
+permet d aller plus vite
+
+
+
+https://medium.com/tell-ia/la-r%C3%A9gression-logistique-expliqu%C3%A9e-%C3%A0-ma-grand-m%C3%A8re-52a2ab30788
+
+
+Premiere etape : preparer les datas.
+selectionner les features pertinentes, + normaliser
+On prevoit 4 regression logistique par eleve, soit une par maison
+il faut donc 4 categories de poids, en fonction de ou il pourrait appartenir
+(probabilite pour qu il soit griffondor, serpentar, ect.)
+
+
+deuxieme etape :calcul de poids.
+pour chaque features que l'on a selectionnees, on effectue une descente de gradient.
+"à chaque itération de l’algorithme, on met à jour β en lui retirant son gradient multiplié par un taux d’apprentissage."
+c'est donc le tetha 1 calcule qui sera le poids.
+
+troisieme etape : sauvegarde des poids obtenus dans un fichier
+
+quatrieme etape : feed les poids aux calculateur
+
+TO DO : verifier le pair plot avec la normalisation?
 
