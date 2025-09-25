@@ -1,4 +1,4 @@
-from display import display_two_datas
+from display import display_two_datas, display_data
 from load_csv import load
 from pandas import DataFrame, options
 import numpy as np
@@ -110,7 +110,7 @@ def main():
         data = data.drop('Index', axis=1)
 
         print(describe(data))
-        # print(data.describe())
+        print(data.describe())
         # display_two_datas(describe(data), data.describe())
     except Exception as e:
         print("Error: ", str(e))
