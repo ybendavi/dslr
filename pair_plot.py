@@ -14,6 +14,10 @@ def main():
         return
     #Ici je recupere les colonnes de type float
     numerical_features = datas[[col for col in datas.columns if datas[col].dtype == 'float64']]
+    # Retirer les features jugées inutiles
+    numerical_features = numerical_features.drop(columns=['Arithmancy', 'Potions', 'Care of Magical Creatures'])
+    # test pour regarder si notre choix est pertinent
+    numerical_features = numerical_features.drop(columns=['Divination', 'Transfiguration', 'History of Magic', 'Muggle Studies', 'Flying', 'Defense Against the Dark Arts'])
     # Je supprime les colonnes ne contenant que des NaN
     numerical_features = numerical_features.dropna(axis=1, how='all')
     numerical_features.fillna(numerical_features.mean(), inplace=True)
@@ -21,7 +25,7 @@ def main():
     color_map = {'Hufflepuff': 'red', 'Ravenclaw': 'blue', 'Slytherin': 'green', 'Gryffindor': 'orange'}
     colors = datas['Hogwarts House'].map(color_map)
     nb_col = numerical_features.shape[1]
-    pd.plotting.scatter_matrix(numerical_features, figsize=(20,20), c=colors)
+    pd.plotting.scatter_matrix(numerical_features, figsize=(12,12), c=colors)
     # Je creer ma figure avec mes axes en faisant en sorte qu'il y en ait assew pour afficher tous mes histogram
     # fig, axes = plt.subplots(nrows=(int(nb_col / 4) + 1), ncols=4, figsize=(20, 12))
     # i = 0

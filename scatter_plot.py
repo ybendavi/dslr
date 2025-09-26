@@ -17,9 +17,10 @@ def standardise(data):
 
 
 def scatter_plot(data):
-    data = data.drop(columns=['Best Hand', 'Birthday'])
+    # drop features that we previously identified as useless
+    data = data.drop(columns=['Best Hand', 'Birthday', 'Arithmancy', 'Potions', 'Care of Magical Creatures'])
     nb_feateurs = data.shape[1]
-    fig, axes = plt.subplots(nrows=8, ncols=10, figsize=(20, 12))
+    fig, axes = plt.subplots(nrows=6, ncols=8, figsize=(20, 12))
     # with best hand and birthday
     # fig, axes = plt.subplots(nrows=9, ncols=12, figsize=(20, 12))
     i = 0
@@ -38,12 +39,12 @@ def scatter_plot(data):
             axes[j, i].set_title("{}\n+ {}".format(col, data.iloc[:, y].name), fontsize=8)
             y += 1
             i += 1
-            if (i == 10):
+            if (i == 8):
             # with best hand and birthday
             # if (i == 12):
                 i = 0
                 j += 1
-    while i < 10:
+    while i < 8:
     # with best hand and birthday
     # while i < 12:
         axes[j,i].axis('off')
