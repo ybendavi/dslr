@@ -1,6 +1,7 @@
 from load_csv import load
 from display import display_data
 from math import sqrt
+from wb_apply import apply_on_data
 import numpy as np
 import sys
 
@@ -33,9 +34,12 @@ def main():
     #Stadardize values
     standardise(data)
     # Adding result column
+
     data['Result'] = file['Hogwarts House'].copy()
 
-    display_data(data)
+    # Apply the weights and bias on the data and display
+    display_data(apply_on_data(data))
+    # display_data(data)
 
 if __name__ == "__main__":
     main()
