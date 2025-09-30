@@ -27,8 +27,14 @@ def cost_function(table, cost_table) :
     '''Calculates the mean of all cost function for every house. There is one cost per house, 
     each cost being calculated on every student'''
     total = len(table)
-    # get per line cost function for every house, axis=1 -> per line
-    table.apply(per_stud_cost_function, axis=1)
+    # create a temporary dataframe to stock individuals calculation of every cost per student per house
+    # get all columns names (except for the last one wich is results)
+    col_names = [f"Cost_{col}" for col in range(table.shape(1) - 1)]
+    # creates a dataframe with similar shape, but empty
+    temp_values = pd.DataFrame(0, index=range(table.shape[0]), columns=col_names)
+    
+    # get per line cost function for every house. axis=1 -> per line
+    table.apply(per_stud_cost_function, axis=1, arg=(temp_values,))
     print("step 1 : calcul des couts individuels")
     display_data(table)
     # get the mean of all calculated columns
@@ -41,19 +47,19 @@ def cost_function(table, cost_table) :
     print("step 2 : calcul des moyennes des erreurs")
     display_data(cost_table)
 
-def per_stud_cost_function(stud) :
+
+def per_stud_cost_function(stud, temp_table) :
     '''Calculates, student after student, individual cost per house'''
     expected = stud['Result']
     stud.drop('Result')
     # get per House the cost function. If the cost function concerns the positive value,
     # expected = 1. Otherwise, expected = 0
-    prefix = "Cost_"
     for col in stud:
         if col.name == expected :
             # adds cost calculated to the proper column, creating it if it doesnt exist
-            stud[f"{prefix}{col}"] = individual_cost_function(stud[col], 1)
+            temp_table[f"Cost_{col}"] = individual_cost_function(stud[col], 1)
         else :
-            stud[f"{prefix}{col}"] = individual_cost_function(stud[col], 0)
+            temp_table[f"Cost_{col}"] = individual_cost_function(stud[col], 0)
         
     
 
