@@ -13,7 +13,7 @@ def calculate_score_by_cat(cat: pd.Series, values: pd.Series) -> float:
     return score
 
 # Pour calculer les scores on va faire la somme des produit de chaque poids par la valeur qu'on traite et y soustraire le bais
-def calculate_scores(df_weight_bias: pd.Dataframe, values: pd.Series) -> List[float]:
+def calculate_scores(df_weight_bias: pd.DataFrame, values: pd.Series) -> List[float]:
     scores: List[float] = df_weight_bias.apply(lambda cat: calculate_score_by_cat(cat, values), axis=1)
     return scores
 
