@@ -2,6 +2,7 @@ from load_csv import load
 from display import display_data
 from math import sqrt
 from cost_function import cost_function
+from wb_apply import apply_on_data
 import numpy as np
 import pandas as pd
 import sys
@@ -35,13 +36,15 @@ def main():
     #Stadardize values
     standardise(data)
     # Adding result column
-    data['Result'] = file['Hogwarts House'].copy()
 
+    data['Result'] = file['Hogwarts House'].copy()
+    
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
     # should be provided with the prediction table
     cost_function(table, cost_table)
     display_data(data)
+
 
 if __name__ == "__main__":
     main()
