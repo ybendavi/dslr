@@ -3,6 +3,7 @@ from display import display_data
 from math import sqrt
 from cost_function import cost_function
 from wb_apply import apply_on_data
+from gradient_descent import gradient_descent
 import numpy as np
 import pandas as pd
 import sys
@@ -37,13 +38,15 @@ def main():
     standardise(data)
     # Adding result column
 
+    table = apply_on_data(data)
     data['Result'] = file['Hogwarts House'].copy()
     
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
     # should be provided with the prediction table
     cost_function(table, cost_table)
-    display_data(data)
+    gradient_descent(table, data)
+    # display_data(data)
 
 
 if __name__ == "__main__":
