@@ -28,3 +28,6 @@ def sigmoide(scores: List[float]) -> List[float]:
 
 def cat_max(probas: List[float]) -> int:
     return (probas.index(max(probas)))
+
+def new_wb(old_data: float, learning_rate: float, gradient: float) -> float:
+    return old_data - learning_rate * gradient
