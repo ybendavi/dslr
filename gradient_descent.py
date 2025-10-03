@@ -20,7 +20,6 @@ def gradient_descent(prediction_frame, feature_frame, expected_frame):
     derivative = pd.DataFrame(index=expected_frame.columns)
     for feature_col in feature_frame :
         derivative[feature_col] = per_feature_gradient_descent(feature_frame[feature_col], expected_frame, prediction_frame)
-    print("derivative = ")
     derivative["Bias"] = calculate_biais(prediction_frame, expected_frame).T
     return derivative
     # display_data(derivative)
@@ -33,7 +32,5 @@ def per_feature_gradient_descent(feature_col, expected_frame, prediction_frame) 
     return results
 
 def calculate_biais(prediction_frame, expected_frame): 
-    print(prediction_frame, expected_frame)
     results = (prediction_frame - expected_frame).sum() * (1 / len(expected_frame))
-    print(results)
     return results    

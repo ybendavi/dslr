@@ -34,10 +34,8 @@ def cost_function(table, cost_table, expected_table) :
     temp_values = (expected_table * np.log(temp_values)) + ((1 - expected_table) * np.log(1 - temp_values))
     # get the mean of all calculated columns, so it will yield the actual cost
     mean_line = temp_values.apply(lambda line : line.sum() * -(1 / total))
-    print(mean_line)
     # update dataFrame with the newl calculated line. We also need to set
     # missing fields, by defaults their values is NaN
     cost_table.loc[len(cost_table)] = mean_line
 
-    print("step 2 : calcul des moyennes des erreurs")
     #display_data(cost_table)

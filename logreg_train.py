@@ -10,17 +10,16 @@ import pandas as pd
 import sys
 
 def standardise(data):
-    columns_name = data.select_dtypes(include=np.number).columns
-    for col in columns_name:
+    for col in data:
+        # Mean
         mean_val = data[col].sum() / len(data[col])
+        # Std derivation
         ret = (data[col] - mean_val) ** 2
         sum = ret.sum()
         std_val = sqrt(sum / len(data[col]))
-        ret /= std_val
-        data[col] = ret
-    print(data)
+        # Standardize
+        data[col] = ((data[col] - mean_val) / std_val)
 
-# Yi
 def get_result_table(feature_frame):
     '''Creates a frame where, for each student, we will evaluate in wich case the class is "positive"
     or  "negative" (i.e. if it belongs to Gryffondor, it will be 1 for Gryffondor and 0 elsewhere)'''
@@ -34,14 +33,13 @@ def get_result_table(feature_frame):
         result_table.at[i, col_name] = 1
     return result_table
 
-def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame):
+def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame, result_table: pd.DataFrame):
     
-    result_table = get_result_table(data)
     # should be provided with the prediction table
     cost_function(prediction_table, cost_table, result_table)
     df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
     #display_data(df_gradient)
-    learning_rate: float = 0.01
+    learning_rate: float = 0.02
     weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
     return weight_bias
 
@@ -59,16 +57,22 @@ def main():
         print("Something went wrong with opening/formating file:", str(e))
         return
     #Stadardize values
+    display_data(data)
+
     standardise(data)
-    
+    display_data(data)
     # Adding result column
     data['Result'] = file['Hogwarts House'].copy()
     weight_bias = get_wb_df(data)
     prediction_table = apply_on_data(data, weight_bias)
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
+    result_table = get_result_table(data)
     for i in range(0,100):
-        weight_bias = train(data, prediction_table, cost_table, weight_bias)
+        weight_bias = train(data, prediction_table, cost_table, weight_bias, result_table)
+        prediction_table = apply_on_data(data, weight_bias)
+        print(cost_table)
+        
     display_data(apply_on_data(data, weight_bias))
     # display_data(data)
 
