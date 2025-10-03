@@ -40,4 +40,4 @@ def cost_function(table, cost_table, expected_table) :
     cost_table.loc[len(cost_table)] = mean_line
 
     print("step 2 : calcul des moyennes des erreurs")
-    display_data(cost_table)
+    #display_data(cost_table)

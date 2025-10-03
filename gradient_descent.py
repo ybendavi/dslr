@@ -12,7 +12,7 @@ import numpy as np
 # Ce qui revient à modifier chaque poids de chaque matière en fonction de la maison dans laquelle elle est?
 # Pour l'instant, nous allons jsute calculer la dérivée avec la fonction fournie dans le sujet
 
-def gradient_descent(prediction_frame, feature_frame, expected_frame, biais_col):
+def gradient_descent(prediction_frame, feature_frame, expected_frame):
     # get results column
     prediction_frame = prediction_frame.drop('Result', axis=1)
     feature_frame = feature_frame.drop('Result', axis = 1)
@@ -21,9 +21,9 @@ def gradient_descent(prediction_frame, feature_frame, expected_frame, biais_col)
     for feature_col in feature_frame :
         derivative[feature_col] = per_feature_gradient_descent(feature_frame[feature_col], expected_frame, prediction_frame)
     print("derivative = ")
-    derivative[biais_col] = calculate_biais(prediction_frame, expected_frame).T
-    display_data(derivative)
-
+    derivative["Bias"] = calculate_biais(prediction_frame, expected_frame).T
+    return derivative
+    # display_data(derivative)
 
 def per_feature_gradient_descent(feature_col, expected_frame, prediction_frame) :
      # create a serie with features as column and the name of the house as line

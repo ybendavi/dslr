@@ -33,8 +33,7 @@ def scores_sigmoide(df_weight_bias: pd.DataFrame, values: pd.Series) -> list[flo
     score : list[float] = calculate_scores(df_weight_bias, values)
     probas: list[float] = sigmoide(score)
     return(probas)
-def apply_on_data(data: pd.DataFrame) -> pd.DataFrame:
-    weight_bias = get_wb_df(data)
+def apply_on_data(data: pd.DataFrame, weight_bias: pd.DataFrame) -> pd.DataFrame:
     df_probas: pd.DataFrame = pd.DataFrame(columns=weight_bias.index)
     for index, row in data.iterrows():
         df_probas.loc[len(df_probas)] = scores_sigmoide(weight_bias, row)

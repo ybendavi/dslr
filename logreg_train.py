@@ -2,8 +2,9 @@ from load_csv import load
 from display import display_data
 from math import sqrt
 from cost_function import cost_function
-from wb_apply import apply_on_data
+from wb_apply import apply_on_data, get_wb_df
 from gradient_descent import gradient_descent
+from formule_utils import new_wb
 import numpy as np
 import pandas as pd
 import sys
@@ -33,6 +34,18 @@ def get_result_table(feature_frame):
         result_table.at[i, col_name] = 1
     return result_table
 
+def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame):
+    
+    result_table = get_result_table(data)
+    # should be provided with the prediction table
+    cost_function(prediction_table, cost_table, result_table)
+    df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
+    #display_data(df_gradient)
+    learning_rate: float = 0.01
+    weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
+    return weight_bias
+
+
 def main():
     try:
         assert len(sys.argv) == 2, "Please provide a data file"
@@ -50,16 +63,13 @@ def main():
     
     # Adding result column
     data['Result'] = file['Hogwarts House'].copy()
-    prediction_table = apply_on_data(data)
-    
-    result_table = get_result_table(data)
+    weight_bias = get_wb_df(data)
+    prediction_table = apply_on_data(data, weight_bias)
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
-    # should be provided with the prediction table
-    cost_function(prediction_table, cost_table, result_table)
-    # To Do : add the weight table to the main and change data.col for weight.col
-    gradient_descent(prediction_table, data, result_table, data.columns[-1])
-    
+    for i in range(0,100):
+        weight_bias = train(data, prediction_table, cost_table, weight_bias)
+    display_data(apply_on_data(data, weight_bias))
     # display_data(data)
 
 if __name__ == "__main__":
