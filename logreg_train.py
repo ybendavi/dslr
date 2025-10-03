@@ -37,9 +37,22 @@ def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.Dat
     
     # should be provided with the prediction table
     cost_function(prediction_table, cost_table, result_table)
+    print(cost_table)
+    for col in cost_table:
+        # is the cost function is not significantly moving, its time to stop regression for this House
+        if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.0001 :
+            # Write weights in a file
+            weights = weight_bias.loc[[col]]
+            weights.to_csv('weights.csv', mode='a', index=False, header=False)
+            # Drops the house from every dataFrame so we don't calculate it again
+            prediction_table.drop(col, axis=1, inplace=True)
+            cost_table.drop(col, axis=1, inplace=True)
+            result_table.drop(col, axis=1, inplace=True)
+            weight_bias.drop(col, inplace=True)
+            print(col, "\n", prediction_table, "\n", cost_table, "\n", result_table, "\n", weight_bias)
     df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
     #display_data(df_gradient)
-    learning_rate: float = 0.02
+    learning_rate: float = 0.03
     weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
     return weight_bias
 
@@ -56,11 +69,10 @@ def main():
     except Exception as e:
         print("Something went wrong with opening/formating file:", str(e))
         return
-    #Stadardize values
-    display_data(data)
 
+    #Stadardize values
     standardise(data)
-    display_data(data)
+
     # Adding result column
     data['Result'] = file['Hogwarts House'].copy()
     weight_bias = get_wb_df(data)
@@ -68,10 +80,12 @@ def main():
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
     result_table = get_result_table(data)
-    for i in range(0,100):
+    with open("weights.csv", "w") as f:
+        f.write(",,Astronomy,Herbology,Ancient Runes,Charms,Bias\n")
+    
+    for i in range(0,1000):
         weight_bias = train(data, prediction_table, cost_table, weight_bias, result_table)
         prediction_table = apply_on_data(data, weight_bias)
-        print(cost_table)
         
     display_data(apply_on_data(data, weight_bias))
     # display_data(data)
