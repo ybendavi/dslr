@@ -35,25 +35,31 @@ def get_result_table(feature_frame):
 
 def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame, result_table: pd.DataFrame):
     
+    for i in range(0,1000):
     # should be provided with the prediction table
-    cost_function(prediction_table, cost_table, result_table)
-    print(cost_table)
-    for col in cost_table:
-        # is the cost function is not significantly moving, its time to stop regression for this House
-        if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.0001 :
-            # Write weights in a file
-            weights = weight_bias.loc[[col]]
-            weights.to_csv('weights.csv', mode='a', index=False, header=False)
-            # Drops the house from every dataFrame so we don't calculate it again
-            prediction_table.drop(col, axis=1, inplace=True)
-            cost_table.drop(col, axis=1, inplace=True)
-            result_table.drop(col, axis=1, inplace=True)
-            weight_bias.drop(col, inplace=True)
-            print(col, "\n", prediction_table, "\n", cost_table, "\n", result_table, "\n", weight_bias)
-    df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
-    #display_data(df_gradient)
-    learning_rate: float = 0.03
-    weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
+        cost_function(prediction_table, cost_table, result_table)
+        print(cost_table)
+        for col in cost_table:
+            # is the cost function is not significantly moving, its time to stop regression for this House
+            if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.0001 :
+                # Write weights in a file
+                weights = weight_bias.loc[[col]]
+                weights.to_csv('weights.csv', mode='a', header=False)
+                # Drops the house from every dataFrame so we don't calculate it again
+                prediction_table.drop(col, axis=1, inplace=True)
+                cost_table.drop(col, axis=1, inplace=True)
+                result_table.drop(col, axis=1, inplace=True)
+                weight_bias.drop(col, inplace=True)
+                
+                if len(prediction_table) == 0:
+                    break                
+                
+        df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
+        #display_data(df_gradient)
+        learning_rate: float = 0.5
+        weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
+        prediction_table = apply_on_data(data, weight_bias)
+    
     return weight_bias
 
 
