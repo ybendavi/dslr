@@ -5,7 +5,6 @@ from cost_function import cost_function
 from wb_apply import apply_on_data, get_wb_df
 from gradient_descent import gradient_descent
 from formule_utils import new_wb
-import numpy as np
 import pandas as pd
 import sys
 
@@ -36,12 +35,12 @@ def get_result_table(feature_frame):
 def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame, result_table: pd.DataFrame):
     
     for i in range(0,1000):
-    # should be provided with the prediction table
+        # should be provided with the prediction table
         cost_function(prediction_table, cost_table, result_table)
         print(cost_table)
         for col in cost_table:
             # is the cost function is not significantly moving, its time to stop regression for this House
-            if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.0001 :
+            if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.00015 :
                 # Write weights in a file
                 weights = weight_bias.loc[[col]]
                 weights.to_csv('weights.csv', mode='a', header=False)
@@ -51,8 +50,9 @@ def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.Dat
                 result_table.drop(col, axis=1, inplace=True)
                 weight_bias.drop(col, inplace=True)
                 
-                if len(prediction_table) == 0:
-                    break                
+                print(len(prediction_table.columns))
+                if len(prediction_table.columns) < 2:
+                    return          
                 
         df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
         #display_data(df_gradient)
@@ -60,7 +60,7 @@ def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.Dat
         weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
         prediction_table = apply_on_data(data, weight_bias)
     
-    return weight_bias
+    # return weight_bias
 
 
 def main():
@@ -81,20 +81,47 @@ def main():
 
     # Adding result column
     data['Result'] = file['Hogwarts House'].copy()
-    weight_bias = get_wb_df(data)
-    prediction_table = apply_on_data(data, weight_bias)
+    
+    # Splitting datas into 80% trainning and 20% to check predictions
+    randoms_lines = len(data) * 20 / 100
+    test_data = data.sample(n=int(randoms_lines))
+    test_data.reset_index(drop=True, inplace = True)
+    training_data = data.drop(test_data.index)
+    training_data.reset_index(drop=True, inplace = True)
+    
+    weight_bias = get_wb_df(training_data)
+    prediction_table = apply_on_data(training_data, weight_bias)
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
-    result_table = get_result_table(data)
+    result_table = get_result_table(training_data)
     with open("weights.csv", "w") as f:
-        f.write(",,Astronomy,Herbology,Ancient Runes,Charms,Bias\n")
+        f.write(",Astronomy,Herbology,Ancient Runes,Charms,Bias\n")
     
-    for i in range(0,1000):
-        weight_bias = train(data, prediction_table, cost_table, weight_bias, result_table)
-        prediction_table = apply_on_data(data, weight_bias)
+    train(training_data, prediction_table, cost_table, weight_bias, result_table)
+    evaluate_model(test_data)
+    
+def evaluate_model(test_data):
+    try:
+        weights = pd.read_csv("weights.csv", index_col=0)
+    except Exception as e :
+        print("Something went wrong with opening weight file:", str(e))
+    prediction_table = apply_on_data(test_data, weights)
+    total_correct = 0
+    for index, line in prediction_table.iterrows() :
+        max = line[0]
+        result = prediction_table.columns[0]
+        for i in range(1,4):
+            if line[i] > max :
+                print(max, prediction_table.columns[i])
+                max = line[i]
+                result = prediction_table.columns[i]
+            prediction_table.at[index, 'Predicted'] = result
+    
+    percentage = (prediction_table['Predicted'] == prediction_table['Result']).sum() * 100 / len(prediction_table)
+    print("accuracy = ", percentage)
+    
+    display_data(prediction_table)
         
-    display_data(apply_on_data(data, weight_bias))
-    # display_data(data)
-
+        
 if __name__ == "__main__":
     main()
