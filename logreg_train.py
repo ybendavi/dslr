@@ -115,7 +115,7 @@ def evaluate_model(test_data):
                 print(max, prediction_table.columns[i])
                 max = line[i]
                 result = prediction_table.columns[i]
-                prediction_table.at[index, 'Predicted'] = result
+        prediction_table.at[index, 'Predicted'] = result
     
     percentage = (prediction_table['Predicted'] == prediction_table['Result']).sum() * 100 / len(prediction_table)
     print("accuracy = ", percentage)
