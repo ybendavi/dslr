@@ -8,7 +8,7 @@ import sys
 
 def main():
     try:
-        assert len(sys.argv) == 3, "Please provide a file file and a weight and bias file"
+        assert len(sys.argv) == 3, "Please provide a data file and a weight and bias file"
         dataset = load(sys.argv[1])
         # Format the data table so we only have pre-selected datas
         # Replace missing datas with the mean of column
@@ -19,7 +19,6 @@ def main():
         data.fillna(data.mean(), inplace=True)
         standardise(data)
         # Format the data table so we only have pre-selected datas
-        display_data(apply_on_data(data, wb))
 
     except Exception as e:
         print("Something went wrong with opening/formating file:", str(e))

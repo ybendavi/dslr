@@ -2,16 +2,16 @@ from load_csv import load
 from display import display_data
 from math import sqrt
 from cost_function import cost_function
-from wb_apply import apply_on_data, get_wb_df
+from wb_apply import get_wb_df
 from gradient_descent import gradient_descent
-from formule_utils import new_wb
+from formule_utils import new_wb, apply_on_data
 import pandas as pd
 import sys
 
 def standardise(data):
     for col in data:
         # Mean
-        mean_val = data[col].sum() / len(data[col])
+        mean_val = data[col].sum() / len(data[col]) 
         # Std derivation
         ret = (data[col] - mean_val) ** 2
         sum = ret.sum()
@@ -24,10 +24,11 @@ def get_result_table(feature_frame):
     or  "negative" (i.e. if it belongs to Gryffondor, it will be 1 for Gryffondor and 0 elsewhere)'''
     
     result_col = feature_frame['Result']
-    result_table = pd.DataFrame(0, columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'],index=range(feature_frame.shape[0]) )
+    result_table = pd.DataFrame(0, columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'],index=range(len(feature_frame)) )
     for  i in range(len(result_col)):
         # find the name of the positive class
         col_name = result_col[i]
+        print(col_name, result_col[i])
         # modify the value from 0 to 1
         result_table.at[i, col_name] = 1
     return result_table
@@ -85,15 +86,19 @@ def main():
     # Splitting datas into 80% trainning and 20% to check predictions
     randoms_lines = len(data) * 20 / 100
     test_data = data.sample(n=int(randoms_lines))
-    test_data.reset_index(drop=True, inplace = True)
+    # Create a dataframe with the 80% left
     training_data = data.drop(test_data.index)
+
+    # Reset indexes on new DF so rowas are numeroted from 1 to x
+    test_data.reset_index(drop=True, inplace = True)
     training_data.reset_index(drop=True, inplace = True)
-    
+
     weight_bias = get_wb_df(training_data)
     prediction_table = apply_on_data(training_data, weight_bias)
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
     result_table = get_result_table(training_data)
+    # Here :D
     with open("weights.csv", "w") as f:
         f.write(",Astronomy,Herbology,Ancient Runes,Charms,Bias\n")
     
@@ -120,7 +125,6 @@ def evaluate_model(test_data):
     percentage = (prediction_table['Predicted'] == prediction_table['Result']).sum() * 100 / len(prediction_table)
     print("accuracy = ", percentage)
     
-    display_data(prediction_table)
         
         
 if __name__ == "__main__":
