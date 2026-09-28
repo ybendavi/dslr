@@ -66,7 +66,7 @@ def logreg_train():
     try:
         file = load(sys.argv[1])
         # Format the data table so we only have pre-selected datas
-        data = file[['Astronomy', 'Herbology', 'Ancient Runes', 'Charms']].copy()
+        data = file[['Astronomy', 'Herbology', 'Ancient Runes']].copy()
         # Replace missing datas with the mean of column
         data.fillna(data.mean(), inplace=True)
 
@@ -97,7 +97,7 @@ def logreg_train():
     result_table = get_result_table(training_data)
     # with -> will handle construction and destruction of objects-like classes
     with open("weights.csv", "w") as f:
-        f.write(",Astronomy,Herbology,Ancient Runes,Charms,Bias\n")
+        f.write(",Astronomy,Herbology,Ancient Runes,Bias\n")
 
     train(training_data, prediction_table, cost_table, weight_bias, result_table)
     evaluate_model(test_data)

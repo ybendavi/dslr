@@ -13,8 +13,10 @@ def get_random_wb(features: list[str]) -> list[list[int]] :
     for house in houses:
         dataset: list[int] = []
         for f in features:
-            dataset.append(np.random.rand() * 0.01)
-        dataset.append(np.random.rand() * 10)
+            # dataset.append(np.random.rand() * 0.01)
+            dataset.append(0)
+        # dataset.append(np.random.rand() * 10)
+        dataset.append(0)
         data.append(dataset)
     return data
 
