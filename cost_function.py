@@ -38,4 +38,4 @@ def cost_function(table, cost_table, expected_table) :
     # missing fields, by defaults their values is NaN
     cost_table.loc[len(cost_table)] = mean_line
 
-    #display_data(cost_table)
+    # display_data(cost_table)

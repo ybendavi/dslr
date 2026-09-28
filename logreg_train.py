@@ -22,26 +22,25 @@ def standardise(data):
 def get_result_table(feature_frame):
     '''Creates a frame where, for each student, we will evaluate in wich case the class is "positive"
     or  "negative" (i.e. if it belongs to Gryffondor, it will be 1 for Gryffondor and 0 elsewhere)'''
-    
+
     result_col = feature_frame['Result']
     result_table = pd.DataFrame(0, columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'],index=range(len(feature_frame)) )
     for  i in range(len(result_col)):
         # find the name of the positive class
         col_name = result_col[i]
-        print(col_name, result_col[i])
         # modify the value from 0 to 1
         result_table.at[i, col_name] = 1
+
     return result_table
 
 def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame, result_table: pd.DataFrame):
     
-    for i in range(0,1000):
+    for i in range(0,100000):
         # should be provided with the prediction table
         cost_function(prediction_table, cost_table, result_table)
-        print(cost_table)
         for col in cost_table:
             # is the cost function is not significantly moving, its time to stop regression for this House
-            if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.00015 :
+            if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.0000015 :
                 # Write weights in a file
                 weights = weight_bias.loc[[col]]
                 weights.to_csv('weights.csv', mode='a', header=False)
@@ -50,8 +49,7 @@ def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.Dat
                 cost_table.drop(col, axis=1, inplace=True)
                 result_table.drop(col, axis=1, inplace=True)
                 weight_bias.drop(col, inplace=True)
-                
-                print(len(prediction_table.columns))
+                # print(col)
                 if len(prediction_table.columns) < 2:
                     return          
                 
@@ -64,9 +62,8 @@ def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.Dat
     # return weight_bias
 
 
-def main():
+def logreg_train():
     try:
-        assert len(sys.argv) == 2, "Please provide a data file"
         file = load(sys.argv[1])
         # Format the data table so we only have pre-selected datas
         data = file[['Astronomy', 'Herbology', 'Ancient Runes', 'Charms']].copy()
@@ -98,12 +95,13 @@ def main():
     # before cost_function, lets create an object to store all the results : 
     cost_table = pd.DataFrame(columns=['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'])
     result_table = get_result_table(training_data)
-    # Here :D
+    # with -> will handle construction and destruction of objects-like classes
     with open("weights.csv", "w") as f:
         f.write(",Astronomy,Herbology,Ancient Runes,Charms,Bias\n")
-    
+
     train(training_data, prediction_table, cost_table, weight_bias, result_table)
     evaluate_model(test_data)
+
     
 def evaluate_model(test_data):
     try:
@@ -111,14 +109,13 @@ def evaluate_model(test_data):
     except Exception as e :
         print("Something went wrong with opening weight file:", str(e))
     prediction_table = apply_on_data(test_data, weights)
-    total_correct = 0
     for index, line in prediction_table.iterrows() :
-        max = line[0]
+        
+        max = line.iloc[0]
         result = prediction_table.columns[0]
         for i in range(1,4):
-            if line[i] > max :
-                print(max, prediction_table.columns[i])
-                max = line[i]
+            if line.iloc[i] > max :
+                max = line.iloc[i]
                 result = prediction_table.columns[i]
         prediction_table.at[index, 'Predicted'] = result
     
@@ -126,6 +123,17 @@ def evaluate_model(test_data):
     print("accuracy = ", percentage)
     
         
+
+# def main(): 
+#     assert len(sys.argv) == 2, "Please provide a data file"
+#     logreg_train()
         
+
+def main(): 
+    assert len(sys.argv) == 2, "Please provide a data file"
+    for i in range(0, 100):
+        logreg_train()
+
+
 if __name__ == "__main__":
     main()
