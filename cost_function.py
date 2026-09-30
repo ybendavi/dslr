@@ -3,7 +3,7 @@ from display import display_data
 import numpy as np
 from math import log
 
-# pour tout m dans l'ensemble des exemples d'entrainement (soit i = une ligne du fichier),
+# pour tout m dans l'ensemble des exemples d'entrainement (soit i = une ligne du fichier donc un eleve),
 # on applique : yi log(hθ(xi)) + (1 − yi) log(1 − hθ(xi)) ;
 # avec xi = vecteur de caractéristique pour l'exemple i (la ligne du fichier train.csv)
 # yi = la sortie ATTENDUE pour l'exemple i qui est soit 1, soit 0 (résultat positif ou négatif, vrai ou faux)
@@ -24,19 +24,18 @@ from math import log
 # - définir un point d'arrêt
 # - s'assurer qu'il n'y a pas de sur-entraînage (overfitting)
 
-def cost_function(table, cost_table, expected_table) :
+def cost_function(prediction_table, cost_table, expected_table) :
     '''Calculates the mean of all cost function for every house. There is one cost per house,
     each cost being calculated on every student'''
-    total = len(table)
+    total = len(prediction_table)
     # create a temporary dataframe to stock individuals calculation of every cost per student per house
-    temp_values = table.drop('Result', axis = 1)
+    temp_values = prediction_table.drop('Result', axis = 1)
     # Actual formula for individual cost
+    # maybe mettre dans un try-catch? il peut y avoir un erreur si le temp_values est trop proche de 0 avec la fonction log()
     temp_values = (expected_table * np.log(temp_values)) + ((1 - expected_table) * np.log(1 - temp_values))
-    # get the mean of all calculated columns, so it will yield the actual cost
+    # to finish the formula, we sum each stud's individual cost result per house. This sum (lets say, each cost for every 
+    # stud in Hufflepuf) shall then be multiplied with -(1 / m), where m is the total number of student
     mean_line = temp_values.apply(lambda line : line.sum() * -(1 / total))
-    # print(mean_line, "\n")
-    # update dataFrame with the newl calculated line. We also need to set
-    # missing fields, by defaults their values is NaN
+    
+    # update dataFrame with the newl calculated line
     cost_table.loc[len(cost_table)] = mean_line
-
-    # display_data(cost_table)

@@ -7,6 +7,7 @@ from gradient_descent import gradient_descent
 from formule_utils import new_wb, apply_on_data
 import pandas as pd
 import sys
+from sklearn.metrics import accuracy_score
 
 def standardise(data):
     for col in data:
@@ -34,13 +35,13 @@ def get_result_table(feature_frame):
     return result_table
 
 def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame, result_table: pd.DataFrame):
-    
-    for i in range(0,100000):
-        # should be provided with the prediction table
+    learning_rate: float = 0.2
+    while (len(prediction_table.columns) >= 2) :
+        # calculate cost to see if we are close of 
         cost_function(prediction_table, cost_table, result_table)
         for col in cost_table:
             # is the cost function is not significantly moving, its time to stop regression for this House
-            if len(cost_table) > 2 and cost_table[col].iloc[-2] - cost_table[col].iloc[-1] < 0.0000015 :
+            if len(cost_table) > 2 and abs(cost_table[col].iloc[-2] - cost_table[col].iloc[-1]) < 0.09 :
                 # Write weights in a file
                 weights = weight_bias.loc[[col]]
                 weights.to_csv('weights.csv', mode='a', header=False)
@@ -49,18 +50,13 @@ def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.Dat
                 cost_table.drop(col, axis=1, inplace=True)
                 result_table.drop(col, axis=1, inplace=True)
                 weight_bias.drop(col, inplace=True)
-                # print(col)
                 if len(prediction_table.columns) < 2:
-                    return          
-                
+                    return
+        # calculate new weights and bias according to 
         df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
         #display_data(df_gradient)
-        learning_rate: float = 0.5
         weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
         prediction_table = apply_on_data(data, weight_bias)
-    
-    # return weight_bias
-
 
 def logreg_train():
     try:
@@ -100,14 +96,15 @@ def logreg_train():
         f.write(",Astronomy,Herbology,Ancient Runes,Bias\n")
 
     train(training_data, prediction_table, cost_table, weight_bias, result_table)
-    evaluate_model(test_data)
+    evaluate_model(test_data, training_data)
 
     
-def evaluate_model(test_data):
+def evaluate_model(test_data, training_data):
     try:
         weights = pd.read_csv("weights.csv", index_col=0)
     except Exception as e :
         print("Something went wrong with opening weight file:", str(e))
+    errors: pd.DataFrame = pd.DataFrame()
     prediction_table = apply_on_data(test_data, weights)
     for index, line in prediction_table.iterrows() :
         
@@ -118,10 +115,27 @@ def evaluate_model(test_data):
                 max = line.iloc[i]
                 result = prediction_table.columns[i]
         prediction_table.at[index, 'Predicted'] = result
+
+        # if (prediction_table.at[index, 'Predicted'] != prediction_table.at[index, 'Result']):
+        #     # errors.copy(prediction_table.iloc[index])
+        #     print(prediction_table.iloc[index])
+
+    prediction_table_training = apply_on_data(training_data, weights)
+    for index, line in prediction_table_training.iterrows() :
+                
+        max = line.iloc[0]
+        result = prediction_table_training.columns[0]
+        for i in range(1,4):
+            if line.iloc[i] > max :
+                max = line.iloc[i]
+                result = prediction_table_training.columns[i]
+        prediction_table_training.at[index, 'Predicted'] = result
     
     percentage = (prediction_table['Predicted'] == prediction_table['Result']).sum() * 100 / len(prediction_table)
     print("accuracy = ", percentage)
-    
+    print("accuracy_score_scikit = ", accuracy_score(prediction_table['Result'], prediction_table['Predicted']))
+    print("accuracy_score_scikit_on_training = ", accuracy_score(prediction_table_training['Result'], prediction_table_training['Predicted']))
+
         
 
 # def main(): 
@@ -137,3 +151,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#https://www.ibm.com/fr-fr/think/topics/logistic-regression
