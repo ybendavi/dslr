@@ -11,5 +11,3 @@ def load(path: str) -> DataFrame:
     except Exception as e:
         print("Error: ", str(e))
         return None
-
-# data = load("datasets/dataset_test.csv")

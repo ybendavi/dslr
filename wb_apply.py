@@ -16,7 +16,6 @@ def get_random_wb(features: list[str]) -> list[list[int]] :
             dataset.append(0)
         dataset.append(0)
         data.append(dataset)
-    print(data)
     return data
 
 def get_wb_df(data: pd.DataFrame) -> pd.DataFrame:

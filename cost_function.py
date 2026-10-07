@@ -27,11 +27,15 @@ from math import log
 def cost_function(table, cost_table, expected_table) :
     '''Calculates the mean of all cost function for every house. There is one cost per house,
     each cost being calculated on every student'''
+    # more then often, as we grow more precise, a division per 0 occurs in log() function.
+    # to prevent this from happening, we add a small fixed value to log(), preventing crashes and NaN results
+    fixed_val:float = 1e-6 
+
     total = len(table)
     # create a temporary dataframe to stock individuals calculation of every cost per student per house
     temp_values = table.drop('Result', axis = 1)
     # Actual formula for individual cost
-    temp_values = (expected_table * np.log(temp_values)) + ((1 - expected_table) * np.log(1 - temp_values))
+    temp_values = (expected_table * np.log(temp_values + fixed_val)) + ((1 - expected_table) * np.log(1 - temp_values + fixed_val))
     # get the mean of all calculated columns, so it will yield the actual cost
     mean_line = temp_values.apply(lambda line : line.sum() * -(1 / total))
     # update dataFrame with the newl calculated line. We also need to set

@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
-
-from load_csv import load
 from pandas import DataFrame as df
 
 
 def set_data(data, parent):
+    '''Helper pour afficher deux dataframes cote a cote'''
+
     frame = ttk.Frame(parent)
     frame.pack(fill=tk.X, pady=10)
 
@@ -33,6 +33,7 @@ def set_data(data, parent):
 
 
 def display_two_datas(data1, data2):
+    '''Affiche dans une fenetre scrollable le contenu exaustif de deux dataframes'''
      # Créer une fenêtre Tkinter
     root = tk.Tk()
     root.title("Affichage DataFrame")
@@ -45,6 +46,7 @@ def display_two_datas(data1, data2):
 
 
 def display_data(data):
+    '''Affiche dans une fenetre scrollable le contenu exaustif d'un dataframe'''
     # Créer une fenêtre Tkinter
     root = tk.Tk()
     root.title("Affichage DataFrame")
@@ -76,13 +78,3 @@ def display_data(data):
 
     # Lancer la fenêtre
     root.mainloop()
-
-
-# def main():
-#     dataframe = load("datasets/dataset_train.csv")
-#     display_data(dataframe)
-
-# if __name__ == "__main__":
-#     main()
-
-
