@@ -1,0 +1,33 @@
+lr = 0.45
+pas = 0.02
+accuracy = 36
+accuracy = 32 (5 under 20)
+accuracy = 29 (3 under 20)
+accuracy = 29 (5 under 20)
+accuracy = 29 (3)
+accuracy = 27 (5)
+accuracy = 35 (3)
+accuracy = 33 (1)
+
+
+remove charm ->
+accuracy = 4 ( + 20 ) (mdr kc)
+modification lr & cdt arret 
+lr = 0.42 pas = 0.05
+accuracy = 36 (0) (!!!!)
+accuracy = 38 (0) (lezgo)
+accuracy = 39
+accuracy = 25
+lr = 0.42 pas = 0.049
+accuracy = 39
+accuracy = 36
+accuracy = 37
+accuracy = 35
+accuracy = 28
+accuracy = 28
+accuracy = 33
+lr = 0.42 pas = 0.048
+accuracy = 31
+accuracy = 30
+accuracy = 38
+accuracy = 33
