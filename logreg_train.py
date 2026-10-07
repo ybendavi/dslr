@@ -7,7 +7,9 @@ from gradient_descent import gradient_descent
 from formule_utils import new_wb, apply_on_data
 import pandas as pd
 import sys
+import numpy as np
 from sklearn.metrics import accuracy_score
+import torch
 
 def standardise(data):
     for col in data:
@@ -35,28 +37,57 @@ def get_result_table(feature_frame):
     return result_table
 
 def train(data: pd.DataFrame, prediction_table: pd.DataFrame, cost_table: pd.DataFrame, weight_bias: pd.DataFrame, result_table: pd.DataFrame):
-    learning_rate: float = 0.2
+    learning_rate: float = 0.4
+    squared_gradient:pd.DataFrame = weight_bias.copy()
+    
     while (len(prediction_table.columns) >= 2) :
         # calculate cost to see if we are close of 
         cost_function(prediction_table, cost_table, result_table)
         for col in cost_table:
             # is the cost function is not significantly moving, its time to stop regression for this House
-            if len(cost_table) > 2 and abs(cost_table[col].iloc[-2] - cost_table[col].iloc[-1]) < 0.09 :
-                # Write weights in a file
-                weights = weight_bias.loc[[col]]
-                weights.to_csv('weights.csv', mode='a', header=False)
-                # Drops the house from every dataFrame so we don't calculate it again
-                prediction_table.drop(col, axis=1, inplace=True)
-                cost_table.drop(col, axis=1, inplace=True)
-                result_table.drop(col, axis=1, inplace=True)
-                weight_bias.drop(col, inplace=True)
-                if len(prediction_table.columns) < 2:
-                    return
-        # calculate new weights and bias according to 
-        df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
-        #display_data(df_gradient)
-        weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
-        prediction_table = apply_on_data(data, weight_bias)
+            try:
+                if len(cost_table) > 2 and abs(cost_table[col].iloc[-2] - cost_table[col].iloc[-1]) < 0.1 :
+                    # Write weights in a file
+                    weights = weight_bias.loc[[col]]
+                    weights.to_csv('weights.csv', mode='a', header=False)
+                    # Drops the house from every dataFrame so we don't calculate it again
+                    prediction_table.drop(col, axis=1, inplace=True)
+                    cost_table.drop(col, axis=1, inplace=True)
+                    result_table.drop(col, axis=1, inplace=True)
+                    weight_bias.drop(col, inplace=True)
+                    if len(prediction_table.columns) < 2:
+                        return
+            except Exception as e:
+                print("into training loop: ", e)
+        try :
+            df_gradient: pd.DataFrame = gradient_descent(prediction_table, data, result_table)
+
+            # if (first == 1) :
+            #     weight_bias: pd.DataFrame = new_wb(weight_bias, learning_rate, df_gradient) 
+            #     # table to keep track of squared gradient, so we can optimise learning rate
+            #     squared_gradient:pd.DataFrame = weight_bias.copy()
+            #     weight_bias.drop(columns=['Bias'])
+            #     first = 0
+            # else :
+            # update squared gradient table ///  a tester sans le biais aussi!
+            squared_gradient = squared_gradient + (weight_bias ** 2)
+            weight_bias: pd.DataFrame = new_new_wb(weight_bias, learning_rate, squared_gradient, df_gradient) 
+
+            prediction_table = apply_on_data(data, weight_bias)
+            # display_data(cost_table)
+            # display_data(weight_bias)
+        except Exception as e:
+            print("killme ", e)
+
+def new_new_wb(weight_bias, learning_rate, squared_gradient, df_gradient):
+    # define a small value to add to the formula so we'll never divide by 0
+    const_e : float = 1e-4
+    print("newlr = ", learning_rate / np.square(squared_gradient + const_e))
+    # l adaptation du learning rate se fait dans la formule ci-dessous
+    new_wb = weight_bias - (learning_rate / np.sqrt(squared_gradient + const_e)) * df_gradient
+    # print(new_wb)
+    return new_wb
+
 
 def logreg_train():
     try:

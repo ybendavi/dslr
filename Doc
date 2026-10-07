@@ -142,5 +142,15 @@ troisieme etape : sauvegarde des poids obtenus dans un fichier
 
 quatrieme etape : feed les poids aux calculateur
 
+
+A cette etape de notre algo, notre pourcentage de reussite oscille entre 97 et 99, or nous 
+devons avoir un resultat strictement superieur a 98.
+Apres quelques recherches, nous avons decider d'utiliser un algorithme d'optimisation
+afin d'ajuster le learning rate en fonction des resultats de la fonction de cout. L'algo choisi 
+est Adagram 
+https://www.datacamp.com/tutorial/adagrad-optimizer-explained
+
+
+
 TO DO : verifier le pair plot avec la normalisation?
 

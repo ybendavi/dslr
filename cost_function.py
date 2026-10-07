@@ -30,9 +30,14 @@ def cost_function(prediction_table, cost_table, expected_table) :
     total = len(prediction_table)
     # create a temporary dataframe to stock individuals calculation of every cost per student per house
     temp_values = prediction_table.drop('Result', axis = 1)
+
     # Actual formula for individual cost
     # maybe mettre dans un try-catch? il peut y avoir un erreur si le temp_values est trop proche de 0 avec la fonction log()
-    temp_values = (expected_table * np.log(temp_values)) + ((1 - expected_table) * np.log(1 - temp_values))
+    try :
+        temp_values = (expected_table * np.log(temp_values)) + ((1 - expected_table) * np.log(1 - temp_values))
+    except Exception as e:
+        print("log error in cost function = ", e)
+    print(temp_values)
     # to finish the formula, we sum each stud's individual cost result per house. This sum (lets say, each cost for every 
     # stud in Hufflepuf) shall then be multiplied with -(1 / m), where m is the total number of student
     mean_line = temp_values.apply(lambda line : line.sum() * -(1 / total))
