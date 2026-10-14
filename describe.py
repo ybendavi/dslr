@@ -1,4 +1,4 @@
-from display import display_two_datas, display_data
+import placeholder_name as ft
 from load_csv import load
 from pandas import DataFrame, options
 import numpy as np
@@ -111,7 +111,8 @@ def main():
 
         print(describe(data))
         print(data.describe())
-        # display_two_datas(describe(data), data.describe())
+        # debug purposes
+        # ft.display.display_two_datas(describe(data), data.describe())
     except Exception as e:
         print("Error: ", str(e))
 

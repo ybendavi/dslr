@@ -1,5 +1,4 @@
 import pandas as pd
-from display import display_data
 import numpy as np
 
 # La dérivée partielle de la fonction de coût est exprimée en fonction de l'élement J, qui
@@ -22,7 +21,6 @@ def gradient_descent(prediction_frame, feature_frame, expected_frame):
         derivative[feature_col] = per_feature_gradient_descent(feature_frame[feature_col], expected_frame, prediction_frame)
     derivative["Bias"] = calculate_biais(prediction_frame, expected_frame).T
     return derivative
-    # display_data(derivative)
 
 def per_feature_gradient_descent(feature_col, expected_frame, prediction_frame) :
      # create a serie with features as column and the name of the house as line

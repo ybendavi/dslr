@@ -32,3 +32,18 @@ accuracy = 30
 accuracy = 38
 accuracy = 33
 accuracy = 27
+accuracy = 45
+accuracy = 24
+accuracy = 37
+accuracy = 30
+lr = 0.42 pas = 0.047
+accuracy = 31
+accuracy = 32
+accuracy = 30
+accuracy = 36
+accuracy = 44
+accuracy = 38
+accuracy = 30
+accuracy = 33
+accuracy = 35
+lr = 0.42 pas = 0.046

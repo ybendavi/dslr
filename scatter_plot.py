@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import sys
 import numpy as np
 from load_csv import load
-from age_to_int import convert_birth_to_days
 from math import sqrt
 from display import display_data
-
+import pandas as pd
+from datetime import date
 
 def standardise(data):
     mean_val = data.sum() / len(data)
@@ -16,13 +16,11 @@ def standardise(data):
     return (ret)
 
 
-def scatter_plot(data):
+def scatter_plot(data: pd.DataFrame):
     # drop features that we previously identified as useless
     data = data.drop(columns=['Best Hand', 'Birthday', 'Arithmancy', 'Potions', 'Care of Magical Creatures'])
     nb_feateurs = data.shape[1]
     fig, axes = plt.subplots(nrows=6, ncols=8, figsize=(20, 12))
-    # with best hand and birthday
-    # fig, axes = plt.subplots(nrows=9, ncols=12, figsize=(20, 12))
     i = 0
     j = 0
     columns_name = data.select_dtypes(include=np.number).columns
@@ -55,17 +53,9 @@ def scatter_plot(data):
     plt.draw()
     plt.show()
 
-def hand_to_int(data):
-    d = {'Right': 0.0, 'Left': 1.0}
-    b_h = data['Best Hand'].map(d)
-    return b_h
 
 def main():
-    data = load("./datasets/dataset_train.csv")
-    data['Birthday'] = convert_birth_to_days(data['Birthday'])
-    data['Best Hand'] = hand_to_int(data)
-    #display_data(data)
-
+    data:pd.DataFrame = load("./datasets/dataset_train.csv")
     data = data.drop('Index', axis=1)
     scatter_plot(data)
 

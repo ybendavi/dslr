@@ -1,6 +1,5 @@
 import pandas as pd
 from typing import List
-from display import display_data
 
 import math
 

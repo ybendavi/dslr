@@ -3,3 +3,5 @@
 __all__ = ['data']
 
 from . import data
+from . import logreg
+from . import display
